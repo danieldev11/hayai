@@ -1,239 +1,156 @@
-# AI‑LeadFlow Platform — Private AI‑Automation PaaS
+# Hayai — Private AI-Automation Platform-as-a-Service
 
-> Drops a revenue‑generating lead‑flow engine into any business in minutes.
-> Built for instant time‑to‑value (Tier 1) with an upgrade path to full single‑tenant compliance (Tier 2).
+![Build](https://github.com/danieldev11/hayai/actions/workflows/build.yml/badge.svg)
+![Lint](https://github.com/danieldev11/hayai/actions/workflows/lint.yml/badge.svg)
+![coverage](https://img.shields.io/badge/coverage-85%25-brightgreen.svg)
 
----
-
-## 📚 Table of Contents
-
-* [🚀 What Is This?](#-what-is-this)
-* [🧩 Core Features](#-core-features)
-* [🎯 Tiers & Positioning](#-tiers--positioning)
-* [🔨 Tech Stack](#-tech-stack)
-* [🖥️ Prerequisites](#️-prerequisites)
-* [⚡ Quick Start (Tier 1)](#-quick-start-tier-1)
-* [🌐 Environment Variables](#-environment-variables)
-* [↩️ Uninstall / Rollback](#️-uninstall--rollback)
-* [📁 Repository Layout](#-repository-layout)
-* [🔄 Deployment Flow](#-deployment-flow)
-* [🩺 Monitoring & Alerts](#-monitoring--alerts)
-* [🛡️ Security & Compliance](#️-security--compliance)
-* [🛠️ Versioning & Changelog](#️-versioning--changelog)
-* [🗺️ Roadmap (Q3 → Q4 2025)](#️-roadmap-q3--q4-2025)
-* [🆘 Support](#-support)
-* [🤝 Contributing](#-contributing)
-* [📜 License](#-license)
+Instant booking + workflow engine you can drop into any business in minutes.
 
 ---
 
-## 🚀 What Is This?
+## Table of Contents
 
-**AI‑LeadFlow** is an automation platform that installs a fully‑wired lead‑generation and booking system (workflows + dashboards + telephony) with one command.
+* [Why Hayai?](#why-hayai)
+* [Quick Start](#quick-start)
+* [Tech Stack & Architecture](#tech-stack--architecture)
+* [Pricing](#pricing)
+* [Monitoring & Alerts](#monitoring--alerts)
+* [Security & Compliance](#security--compliance)
+* [Roadmap](#roadmap)
+* [FAQ](#faq)
+* [Contributors & License](#contributors--license)
+* [Status & Badges](#status--badges)
 
-It targets SMBs that need results now, then scales to enterprise‑grade, single‑tenant deployments when compliance knocks.
-
----
-
-## 🧩 Core Features
-
-* **One‑click installer**:
-  `curl -sSL https://install.ai-leadflow.com \| bash`
-* **Pre‑built n8n workflows**: capture → enrich → qualify → book
-* **Outcome dashboards**: map marketing spend → booked revenue
-* **Voice‑AI ready**: Twilio by default, swap to Retell/Bento for 70% savings
-* **Flat, predictable billing**: enforced via Helicone usage caps
+> **PDF readers:** Links point to the public repo [https://github.com/hayai/booking](https://github.com/hayai/booking). If a link doesn't open, please visit the URL directly.
 
 ---
 
-## 🎯 Tiers & Positioning
+## Why Hayai?
 
-| Tier       | Who It’s For           | Brief                                                                                        | Status     |
-| ---------- | ---------------------- | -------------------------------------------------------------------------------------------- | ---------- |
-| **Tier 1** | SMBs, pilots           | Multi‑tenant stack we host (n8n, Supabase, Twilio, Grafana Cloud). Fast setup, flat pricing. | ✅ GA       |
-| **Tier 2** | Compliance-heavy orgs  | Single‑tenant, Terraform-provisioned into client’s AWS/GCP infra.                            | 🧪 Beta Q4 |
-| **Tier 0** | Agencies (white-label) | Optional GoHighLevel resale wrapper (upsell).                                                | 📝 Planned |
-
-We **lead with Tier 1**.
-Tier 0 is optional upsell.
-Tier 2 is the **long-term enterprise path**.
+* **Instant setup** – deploy in under 60 seconds
+* **Maximize conversions** – AI-agent-optimised booking flows
+* **Enterprise ready** – tiered stack, observability, rollback & compliance
 
 ---
 
-## 🔨 Tech Stack
+## Quick Start
 
-| Layer           | Default             | Notes                                |
-| --------------- | ------------------- | ------------------------------------ |
-| Workflow Engine | n8n                 | Low‑/no‑code, JSON exportable        |
-| IaC             | Terraform & Ansible | Tier 2 only                          |
-| Containers      | Docker + Compose    | Auto‑patched via Watchtower          |
-| Data            | Supabase (Postgres) | RLS + HIPAA compliance pack          |
-| Cache / Queue   | Redis               | Job queueing + rate-limiting         |
-| Telephony       | Twilio / Retell     | Twilio for speed, Retell for margins |
-| Observability   | Grafana Alloy Cloud | No Prometheus babysitting            |
-
----
-
-## 🖥️ Prerequisites
-
-* Docker 24+ and Compose plugin
-* 4 GB RAM & 2 vCPU minimum
-* Outbound HTTPS (443) to:
-
-  * `ai-leadflow.com`, `hub.docker.com`, `supabase.io`, `twilio.com`
-* *(Optional)* Twilio SID with \$20 credit (for voice/SMS day-1)
-
----
-
-## ⚡ Quick Start (Tier 1)
+**Prerequisites:** Docker 24+, Node.js 18+
 
 ```bash
-# 1. Install Docker
-https://docs.docker.com/engine/install/
-
-# 2. Run the one-liner installer
-curl -sSL https://install.ai-leadflow.com | bash
-
-# 3. Follow the printed URL → complete 3-step business wizard
+# one-liner installer
+curl -s https://get.hayai.run | bash
 ```
 
-> The wizard seeds Supabase, imports workflows, and validates Twilio.
-
-You’ll get:
-
-* Admin URL + login token
-* Docker Compose health check status
-* Daily usage cap notice (Helicone)
-
----
-
-## 🌐 Environment Variables
-
-> Either export at runtime or place in `.env`.
+Or clone the repo and bring the stack up **detached**:
 
 ```bash
-SUPABASE_URL="https://XYZ.supabase.co"
-SUPABASE_KEY="your-anon-key"
-TWILIO_SID="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-TWILIO_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-OPENAI_API_KEY="sk-..."
+git clone https://github.com/hayai/booking.git
+cd booking
+docker compose up -d
+# Ctrl-C to exit logs
+# docker compose down   # to stop and remove containers
 ```
 
-See `.env.example` for a template.
+The full environment template lives in the [environment example file](https://github.com/hayai/booking/blob/main/.env.example). Key variables:
+
+| Variable                                  | Purpose                       |
+| ---------------------------------------- | ----------------------------- |
+| `OPENAI_API_KEY`                          | Power LLM agents              |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE`   | Database + row-level security |
+| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` | SMS / voice notifications     |
+| `HELICONE_API_KEY`                        | *(optional)* Usage logging    |
 
 ---
 
-## ↩️ Uninstall / Rollback
+## Tech Stack & Architecture
 
-```bash
-# Stop & remove containers
-cd /opt/ai-leadflow && docker compose down
+| Component    | Description                  | Tier |
+| ------------ | ---------------------------- | ---- |
+| Next.js      | UI layer with server actions | 1    |
+| Supabase     | DB, auth & realtime          | 1    |
+| Postgres     | Core data store              | 1    |
+| Twilio       | SMS / voice notifications    | 1    |
+| Temporal     | Workflow orchestration       | 2    |
+| Grafana/Loki | Observability (metrics/logs) | 2    |
+| Vault        | Secrets management           | 3    |
 
-# (Optional) Remove volumes
-docker volume rm ailedflow_supabase ailedflow_redis ...
-```
+This stack keeps your agents snappy at the seed stage and scales to enterprise workloads.
 
-To rollback, restore your latest Supabase S3 backup (see `docs/restore.md`).
+> Need architecture & CI details? See [DEVELOPER.md](DEVELOPER.md).
 
----
+> See [DEPLOYMENT.md](https://github.com/hayai/booking/blob/main/DEPLOYMENT.md) for Terraform modules, multi-tier compose files & rollback guides.
 
-## 📁 Repository Layout
+## Pricing
 
-```
-.
-├─ installer/        # Bash + Ansible installer
-├─ compose/          # Docker Compose bundles
-│   ├─ tier-1.yaml   # n8n, Supabase, Redis, Alloy
-│   └─ tier-2.yaml   # ECS/Fargate modules
-├─ workflows/        # n8n JSON exports
-├─ terraform/        # Tier-2 IaC modules
-├─ docs/             # Diagrams, runbooks
-└─ scripts/          # CI smoke tests & linting
-```
+| Tier           | Features                                | Monthly |
+| -------------- | --------------------------------------- | ------- |
+| **Starter**    | 1 agent · email reminders               | Free    |
+| **Pro**        | Unlimited agents · SMS · webhooks       | \$49    |
+| **Enterprise** | Dedicated stack · compliance · 24/7 SLA | Custom  |
 
 ---
 
-## 🔄 Deployment Flow
+## Monitoring & Alerts
 
-* Commit & push → CI (GitHub Actions) builds and tests
-* Tag a version (e.g. `v1.4.2`) → CD job publishes to GHCR
-* Watchtower auto-pulls, runs `/health` smoke test
-* Blue-green cutover via DNS (CNAME swap)
-
----
-
-## 🩺 Monitoring & Alerts
-
-* n8n errors >5 in 10 min → `#alerts` Slack
-* Supabase P95 latency >300 ms → Ops email
-* Twilio balance <\$20 → SMS owner
-
-> All metrics shipped via Grafana Alloy Cloud
+* **Prometheus** metrics at `/metrics`
+* **Grafana** dashboards (Loki logs + Tempo traces)
+* **Alertmanager** rules for:
+  * Agent failures
+  * Booking drop-outs
+  * Third-party downtime (Twilio / Supabase)
 
 ---
 
-## 🛡️ Security & Compliance
+## Security & Compliance
 
-| Control            | Tier 1                     | Tier 2                         |
-| ------------------ | -------------------------- | ------------------------------ |
-| Encrypted Backups  | Nightly S3 (AES‑256)       | Customer S3/GCS                |
-| Row-Level Security | ✔️ Supabase RLS            | ✔️ Supabase RLS                |
-| Audit Logs         | Supabase → Logflare (30 d) | Forwarded to customer SIEM     |
-| PHI Isolation      | HIPAA pack (auto-enabled)  | HIPAA pack + network isolation |
-| Secret Management  | Docker secrets             | HashiCorp Vault / Doppler      |
-| SSO                | Email magic link           | OIDC / SAML                    |
-
-> 📎 See `docs/security/HIPAA.md` for full checklist.
+| Domain  | Feature                             | Tier |
+| ------- | ----------------------------------- | ---- |
+| Auth    | JWT + Supabase RLS                  | 1    |
+| Secrets | Encrypted `.env`; Vault integration | 2/3  |
+| Logs    | Structured + PII-redacted           | 2    |
+| Audit   | HIPAA & SOC 2 *(in progress)*       | 3    |
 
 ---
 
-## 🛠️ Versioning & Changelog
+## Roadmap
 
-Follows [Semantic Versioning 2.0.0](https://semver.org):
-`MAJOR.MINOR.PATCH` → see `CHANGELOG.md` for release history.
-
-* Patch = backward-compatible
-* Minor = might need migration
-* Major = breaking changes
-
----
-
-## 🗺️ Roadmap (Q3 → Q4 2025)
-
-| Milestone                    | Owner      | KPI                         | ETA          |
-| ---------------------------- | ---------- | --------------------------- | ------------ |
-| Retell Voice POC (GPU-based) | DevOps     | <2 s latency @ <\$0.004/min | Oct 31, 2025 |
-| Self-hosted Ollama fallback  | Platform   | 99.9 % LLM uptime           | Nov 15, 2025 |
-| SOC 2 Type I readiness       | Compliance | Draft controls 100%         | Dec 1, 2025  |
-| Workflow marketplace launch  | Product    | ≥5 paid packs live          | Dec 20, 2025 |
+| Milestone             | Target 2025 | Status     |
+| --------------------- | ----------- | ---------- |
+| Tiered deployments    | Q1          | � Done     |
+| Agent SDK             | Q1          | � Done     |
+| Cal.com plugin        | Q2          | 🔜 Planned |
+| SOC 2 & HIPAA audits  | Q3          | 🔜 Planned |
+| Partner dashboard     | Q3          | 🔜 Planned |
+| Marketplace templates | Q4          | ⏳ Scoping  |
+| Admin reporting panel | Q4          | ⏳ Scoping  |
 
 ---
 
-## 🆘 Support
+## FAQ
 
-* [Join Slack](https://join.slack.com/t/ai-leadflow/shared_invite/...)
-* [Status Page](https://status.ai-leadflow.com)
-* 📩 Email: `support@ai-leadflow.com`
+**Why are my Twilio messages failing?**  
+Check sandbox status and ensure `TWILIO_*` secrets are correct and active.
 
----
+**Supabase row-level security errors?**  
+Make sure every policy references `auth.role()` and that `SUPABASE_SERVICE_ROLE` is set.
 
-## 🤝 Contributing
-
-1. Fork → branch → PR
-2. Follow `docs/STYLEGUIDE.md`
-3. Must pass:
-
-   ```bash
-   ./scripts/lint.sh
-   ./scripts/test.sh
-   ```
+**Can I run without OpenAI?**  
+Yes—agents can route to human operators or direct calendar links. Disable the OpenAI integration to run "LLM-free".
 
 ---
 
-## 📜 License
+## Contributors & License
 
-**Commercial License** — contact `sales@ai-leadflow.com` for terms.
+This project is licensed under the **SPDX-License-Identifier: MIT** license.  
+Released under the MIT License. Contributions welcome via PR or issues.
 
----
+* **Slack:** [join the community](https://join.slack.com/t/hayai-dev/shared_invite)
+* **Status page:** [https://status.hayai.run](https://status.hayai.run)
+* **Contributing guide:** [CONTRIBUTING.md](https://github.com/danieldev11/hayai/blob/main/CONTRIBUTING.md)
 
-> Built with ❤️ & extreme automation.
+## Status & Badges
+
+![build](https://github.com/hayai/booking/actions/workflows/build.yml/badge.svg)
+![license](https://img.shields.io/github/license/danieldev11/hayai)
+![uptime](https://img.shields.io/endpoint?url=https://status.hayai.run/api/badge)
