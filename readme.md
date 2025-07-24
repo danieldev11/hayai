@@ -27,6 +27,8 @@ Instant booking + workflow engine you can drop into any business in minutes.
 
 ## Why Hayai?
 
+**Hybrid Go-To-Market** – Vertical ‘Revenue Engine’ templates deliver instant, no-code deployments; our DevOps stack scales them to enterprise.
+
 * **Instant setup** – deploy in under 60 seconds
 * **Maximize conversions** – AI-agent-optimised booking flows
 * **Enterprise ready** – tiered stack, observability, rollback & compliance
@@ -39,8 +41,7 @@ Instant booking + workflow engine you can drop into any business in minutes.
 
 ```bash
 # one-liner installer
-curl -s https://get.hayai.run | bash
-```
+curl -s https://raw.githubusercontent.com/danieldev11/hayai/main/installer/install.sh | bash --template remodeling```
 
 Or clone the repo and bring the stack up **detached**:
 
@@ -74,11 +75,11 @@ The full environment template lives in the [environment example file](https://gi
 | Temporal     | Workflow orchestration       | 2    |
 | Grafana/Loki | Observability (metrics/logs) | 2    |
 | Vault        | Secrets management           | 3    |
+| n8n          | Workflow engine + vertical templates | 1 |
 
 This stack keeps your agents snappy at the seed stage and scales to enterprise workloads.
 
 > Need architecture & CI details? See [DEVELOPER.md](DEVELOPER.md).
-
 > See [DEPLOYMENT.md](https://github.com/hayai/booking/blob/main/DEPLOYMENT.md) for Terraform modules, multi-tier compose files & rollback guides.
 
 ## Pricing

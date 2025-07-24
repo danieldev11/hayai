@@ -27,6 +27,8 @@ hayai/
 │   ├── compose/       # Docker Compose files (Tier 1)
 │   ├── terraform/     # Terraform IaC (Tier 2/3)
 │   └── helm/          # Kubernetes charts (Tier 3)
+├── services/
+│   └── ghl-connector/ # GoHighLevel sync micro-service
 ├── scripts/           # Build, deployment and utility scripts
 └── .github/
     └── workflows/     # CI/CD pipeline definitions
@@ -72,6 +74,14 @@ SENTRY_DSN=...        # For error tracking
 
 Run `pnpm generate:env` to generate `.env` files from Terraform outputs.
 
+### 3.5 Template Lifecycle
+
+Vertical templates live in `packages/templates/<vertical>/workflow.json`.
+
+* **Versioning** – semver per template (`remodeling@1.0.0`).
+* **CI** – `ci/template-smoke.yml` spins up n8n, imports the template, and must exit 0.
+* **Publishing** – run `pnpm template:release` to bump, tag, and publish.
+
 ## 4. Deployment Flow (Blue-Green)
 
 Our Git-based deployment flow ensures zero-downtime updates:
@@ -93,16 +103,16 @@ make deploy.rollback ENV=production
 
 We use GitHub Actions for our build/release pipeline:
 
-- **CI**: `build.yml`, `test.yml`, `lint.yml`, `docker.yml`
-- **CD**: `deploy.yml`, `release.yml`
+* **CI**: `build.yml`, `test.yml`, `lint.yml`, `docker.yml,`smoke.yml`
+* **CD**: `deploy.yml`, `release.yml`
 
 Short-lived deployment tokens are fetched from HashiCorp Vault during CI runs.
 
 Pull requests are blocked if:
 
-- Test coverage falls below 80%
-- Linting errors exist
-- Any unit or integration test fails
+* Test coverage falls below 80%
+* Linting errors exist
+* Any unit or integration test fails
 
 ## 6. Infrastructure as Code
 
@@ -145,9 +155,9 @@ Alert rules are defined in `infra/monitoring/alerts.yaml` and synced via CI:
 
 We follow Semantic Versioning 2.0:
 
-- **Patch** (1.0.x): Backwards compatible bug fixes, auto-deployed
-- **Minor** (1.x.0): New features, backwards compatible, requires human approval
-- **Major** (x.0.0): Breaking changes, requires migration plan and approval
+* **Patch** (1.0.x): Backwards compatible bug fixes, auto-deployed
+* **Minor** (1.x.0): New features, backwards compatible, requires human approval
+* **Major** (x.0.0): Breaking changes, requires migration plan and approval
 
 We use `semantic-release` to automate versioning based on commit messages.
 
@@ -160,19 +170,20 @@ Developer workflow:
 3. Pre-commit hooks ensure linting (eslint, Prettier) and tests pass
 4. Write tests for new features (Vitest for unit, Playwright for E2E)
 5. Submit PR with linked issue, squash merge after approval
+6. PRs adding or updating templates must include an .n8n.validate fixture and pass template-smoke.
 
 ## 10. License
 
-- **Default**: MIT License (see LICENSE.md)
-- **Tier 3**: May include dual licensing for enterprise features
+* **Default**: MIT License (see LICENSE.md)
+* **Tier 3**: May include dual licensing for enterprise features
 
 Contact [security@hayai.run](mailto:security@hayai.run) for SOC2/HIPAA compliance details.
 
 ## 11. Support
 
-- **Developer Slack**: Channels `#dev` and `#ops`
-- **Status Page**: [https://status.hayai.run](https://status.hayai.run)
-- **Email**: [support@hayai.run](mailto:support@hayai.run) (24/7 for Tier 3 customers)
+* **Developer Slack**: Channels `#dev` and `#ops`
+* **Status Page**: [https://status.hayai.run](https://status.hayai.run)
+* **Email**: [support@hayai.run](mailto:support@hayai.run) (24/7 for Tier 3 customers)
 
 ---
 
